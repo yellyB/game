@@ -17,13 +17,15 @@ const staggerFrames = 5;
 
 function animate() {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  // ctx.fillRect(x, 50, 100, 100);
+
+  let position = Math.floor(gameFrame / staggerFrames) % 6;
+  frameX = spriteWidth * position;
 
   // drawImage 인자: 가져올image, source 좌표, source 넓&높 , destination 좌표, destination 넓&높
   // ctx.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
   ctx.drawImage(
     playerImage,
-    frameX * spriteWidth,
+    frameX,
     frameY * spriteHeight,
     spriteWidth,
     spriteHeight,
@@ -33,15 +35,6 @@ function animate() {
     CANVAS_HEIGHT
   );
 
-  // 애니메이션 속도 조절. staggerFrames 이 증가할 수록 나머지가 0이 되는 타이밍이 늦어짐. = 속도 느려짐
-  if (gameFrame % staggerFrames == 0) {
-    // idx 0 의 row 가 7개 이미지이기 때문에 7이하일때만 증가, 넘어가면 초기화
-    if (frameX < 6) {
-      frameX++;
-    } else {
-      frameX = 0;
-    }
-  }
   gameFrame++;
   requestAnimationFrame(animate); // loop
 }
