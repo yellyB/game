@@ -18,7 +18,7 @@ backgroundLayer4.src = "images/layer-4.png";
 backgroundLayer5.src = "images/layer-5.png";
 
 let x = 0;
-let x2 = 2400;
+let x2 = IMAGE_WIDTH;
 
 function animate() {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); // 이전 프레임 스머지 되는것 막기
@@ -26,9 +26,10 @@ function animate() {
   ctx.drawImage(backgroundLayer4, x2, 0);
 
   // 이미지가 왼쪽으로 이동해야 하기 때문에 x 좌표를 계속 감소
-  if (x < -IMAGE_WIDTH) x = 2400;
+  // 두 배경 gap을 없애기 위해 이미지를 이동시키는 동안 감소했을 gameSpeed 만큼 빼줌
+  if (x <= -IMAGE_WIDTH) x = IMAGE_WIDTH - gameSpeed;
   else x -= gameSpeed;
-  if (x2 < -IMAGE_WIDTH) x2 = 2400;
+  if (x2 <= -IMAGE_WIDTH) x2 = IMAGE_WIDTH - gameSpeed;
   else x2 -= gameSpeed;
 
   requestAnimationFrame(animate);
