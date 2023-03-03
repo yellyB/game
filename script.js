@@ -31,25 +31,28 @@ class Layer {
     this.y = 0;
     this.width = 2400;
     this.height = 700;
-    this.x2 = this.width;
     this.image = image;
     this.speedModifier = speedModifier;
     this.speed = gameSpeed * this.speedModifier;
   }
   update() {
     this.speed = gameSpeed * this.speedModifier;
+    // 첫 이미지가 끝에 다다랐다?
     if (this.x <= -this.width) {
-      this.x = this.width + this.x2 - this.speed;
+      this.x = 0; // 첫 이미지를 둘째 이미지 뒤로 보내는 것이 아닌, 첫 이미지를 처음 위치로 초기화
     }
-    if (this.x2 <= -this.width) {
-      this.x2 = this.width + this.x - this.speed;
-    }
+
     this.x = Math.floor(this.x - this.speed);
-    this.x2 = Math.floor(this.x2 - this.speed);
   }
   draw() {
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    ctx.drawImage(this.image, this.x2, this.y, this.width, this.height);
+    ctx.drawImage(
+      this.image,
+      this.x + this.width, // 두번째 이미지는 계속 첫번째 이미지 뒤에 위치하도록
+      this.y,
+      this.width,
+      this.height
+    );
   }
 }
 
