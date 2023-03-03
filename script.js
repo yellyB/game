@@ -17,20 +17,40 @@ backgroundLayer3.src = "images/layer-3.png";
 backgroundLayer4.src = "images/layer-4.png";
 backgroundLayer5.src = "images/layer-5.png";
 
-let x = 0;
-let x2 = IMAGE_WIDTH;
+class Layer {
+  constructor(image, speedModifier) {
+    this.x = 0;
+    this.y = 0;
+    this.width = 2400;
+    this.height = 700;
+    this.x2 = this.width;
+    this.image = image;
+    this.speedModifier = speedModifier;
+    this.speed = gameSpeed * this.speedModifier;
+  }
+  update() {
+    this.speed = gameSpeed * this.speedModifier;
+    if (this.x <= -this.width) {
+      this.x = this.width + this.x2 - this.speed;
+    }
+    if (this.x2 <= -this.width) {
+      this.x2 = this.width + this.x - this.speed;
+    }
+    this.x = Math.floor(this.x - this.speed);
+    this.x2 = Math.floor(this.x2 - this.speed);
+  }
+  draw() {
+    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    ctx.drawImage(this.image, this.x2, this.y, this.width, this.height);
+  }
+}
+
+const layer4 = new Layer(backgroundLayer4, 2);
 
 function animate() {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); // 이전 프레임 스머지 되는것 막기
-  ctx.drawImage(backgroundLayer4, x, 0);
-  ctx.drawImage(backgroundLayer4, x2, 0);
-
-  // 이미지가 왼쪽으로 이동해야 하기 때문에 x 좌표를 계속 감소
-  // 두 배경 gap을 없애기 위해 이미지를 이동시키는 동안 감소했을 gameSpeed 만큼 빼줌
-  if (x <= -IMAGE_WIDTH) x = IMAGE_WIDTH - gameSpeed;
-  else x -= gameSpeed;
-  if (x2 <= -IMAGE_WIDTH) x2 = IMAGE_WIDTH - gameSpeed;
-  else x2 -= gameSpeed;
+  layer4.update();
+  layer4.draw();
 
   requestAnimationFrame(animate);
 }
