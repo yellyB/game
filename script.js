@@ -11,6 +11,8 @@ const enemiesArray = [];
 const enemyImage = new Image();
 enemyImage.src = "enemies/enemy1.png";
 
+let gameFrame = 0;
+
 class Enemy {
   constructor() {
     this.x = Math.random() * canvas.width;
@@ -21,11 +23,15 @@ class Enemy {
     this.width = this.spriteWidth / 2.5;
     this.height = this.spriteHeight / 2.5;
     this.frame = 0;
+    this.flapSpeed = Math.floor(Math.random() * 3 + 1);
   }
   update() {
     this.x += this.speed;
     this.y += this.speed;
-    this.frame > 4 ? (this.frame = 0) : this.frame++; // 5개의 이미지를 루프
+    if (gameFrame % this.flapSpeed === 0) {
+      // 랜덤한 날개짓 속도
+      this.frame > 4 ? (this.frame = 0) : this.frame++; // 5개의 이미지를 루프
+    }
   }
   draw() {
     ctx.strokeRect(this.x, this.y, this.width, this.height);
@@ -58,6 +64,7 @@ function animate() {
     enemy.draw();
   });
 
+  gameFrame++;
   requestAnimationFrame(animate);
 }
 animate();
