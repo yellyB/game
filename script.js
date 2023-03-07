@@ -15,28 +15,29 @@ let gameFrame = 0;
 
 class Enemy {
   constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.speed = Math.random() * 4 - 2; // -2 ~ 2까지의 숫자 얻게 됨
+    this.image = new Image();
+    this.image.src = "enemies/enemy1.png";
+    // this.speed = Math.random() * 4 - 2; // -2 ~ 2까지의 숫자 얻게 됨
     this.spriteWidth = 293;
     this.spriteHeight = 155;
-    this.width = this.spriteWidth / 2.5;
+    this.width = this.spriteWidth / 2.5; // 나눠주어서 enemy 크기 조절
     this.height = this.spriteHeight / 2.5;
+    this.x = Math.random() * (canvas.width - this.width); // enemy가 내부에만 들어오도록(경계에 걸치지 않게) this.width빼줌
+    this.y = Math.random() * (canvas.height - this.height);
     this.frame = 0;
     this.flapSpeed = Math.floor(Math.random() * 3 + 1);
   }
   update() {
-    this.x += this.speed;
-    this.y += this.speed;
+    this.x += Math.random() * 6 - 3;
+    this.y += Math.random() * 6 - 3;
     if (gameFrame % this.flapSpeed === 0) {
       // 랜덤한 날개짓 속도
       this.frame > 4 ? (this.frame = 0) : this.frame++; // 5개의 이미지를 루프
     }
   }
   draw() {
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
     ctx.drawImage(
-      enemyImage,
+      this.image,
       this.frame * this.spriteWidth,
       0,
       this.spriteWidth,
