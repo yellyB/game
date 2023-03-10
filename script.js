@@ -26,7 +26,7 @@ class Enemy {
     this.y = Math.random() * (canvas.height - this.height);
     this.frame = 0;
     this.flapSpeed = Math.floor(Math.random() * 3 + 1);
-    this.angle = Math.random() * 2;
+    this.angle = Math.random() * 500; // 시작 위치 랜덤
     this.angleSpeed = Math.random() * 2 + 0.5; // 멀면 더 빨리 돌도록 특정 값을 더해줌(가속)
     this.curve = Math.random() * 200 + 50; //  높을수록 이동 간격 넓어짐. 게임 난이도 올라감
   }
@@ -34,10 +34,10 @@ class Enemy {
     // x y 둘 다 cos 을 사용한다면 왔다갔다하는 움직임을 보일것임
     // x y 를 sin|cos 함수 내에서 같은 앵글 값으로 나눠주면 원으로 움직임
     this.x =
-      this.curve * Math.sin((this.angle * Math.PI) / 90) +
+      (canvas.width / 2) * Math.sin((this.angle * Math.PI) / 90) +
       (canvas.width / 2 - this.width / 2); // 화면 내에서 좌우로 움직이도록
     this.y =
-      this.curve * Math.cos((this.angle * Math.PI) / 270) +
+      (canvas.height / 2) * Math.cos((this.angle * Math.PI) / 270) +
       (canvas.height / 2 - this.height / 2); // 화면 내에서 상하로 움직이도록
     this.angle += this.angleSpeed;
 
