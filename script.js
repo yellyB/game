@@ -19,8 +19,11 @@ class Explosion {
     this.frame = 0;
     this.timer = 0;
     this.angle = Math.random() * 6.2;
+    this.sound = new Audio();
+    this.sound.src = "boom.wav";
   }
   update() {
+    if (this.frame === 0) this.sound.play();
     this.timer++;
     if (this.timer % 10 === 0) {
       this.frame++;
@@ -49,9 +52,9 @@ window.addEventListener("click", function (e) {
   createAnimation(e);
 });
 
-window.addEventListener("mousemove", function (e) {
-  createAnimation(e);
-});
+// window.addEventListener("mousemove", function (e) {
+//   createAnimation(e);
+// });
 
 function createAnimation(e) {
   let positionX = e.x - canvasPosition.left; // 클릭한 좌표를 중심으로 생기도록 캔버스 위치만큼 빼줌.
