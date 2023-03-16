@@ -56,8 +56,8 @@ class Raven {
     }
   }
   draw() {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    collisionCtx.fillStyle = this.color;
+    collisionCtx.fillRect(this.x, this.y, this.width, this.height);
     ctx.drawImage(
       this.image,
       this.frame * this.spriteWidth,
@@ -72,6 +72,47 @@ class Raven {
   }
 }
 
+let explosions = [];
+class Explosion {
+  constructor(x, y, size) {
+    this.image = new Image();
+    this.image.src = "images/boom.png";
+    this.spriteWidth = 200;
+    this.spriteHeight = 179;
+    this.size = size;
+    this.x = x;
+    this.y = y;
+    this.frame = 0;
+    this.sound = new Audio();
+    this.sound.src = "sounds/boom.wav";
+    this.timeSinceLastFrame = 0;
+    this.frameInterval = 200;
+    this.markedForDeletion = false;
+  }
+  update(deltaTime) {
+    if (this.frame === 0) this.sound.play();
+    this.timeSinceLastFrame += deltaTime;
+    if (this.timeSinceLastFrame > this.frameInterval) {
+      this.frame++;
+      this.timeSinceLastFrame = 0; // 초기화 해줘야 다음 프레임으로 일정한 간격으로 넘어갈 수 있음(안그럼 두번째 프레임부터는 빨리 넘어감)
+      if (this.frame > 5) this.markedForDeletion = true; // 5번째 이미지가 되면 마킹을 true로 바꿔서 배열에서 제거함
+    }
+  }
+  draw() {
+    ctx.drawImage(
+      this.image,
+      this.frame * this.spriteWidth,
+      0,
+      this.spriteWidth,
+      this.spriteHeight,
+      this.x,
+      this.y - this.size / 4,
+      this.size,
+      this.size
+    );
+  }
+}
+
 function drawScore() {
   ctx.fillStyle = "black";
   ctx.fillText("Score: " + score, 50, 75);
@@ -80,23 +121,40 @@ function drawScore() {
 }
 
 window.addEventListener("click", function (e) {
-  const detectPixelColor = ctx.getImageData(e.x, e.y, 1, 1);
-  console.log(detectPixelColor);
+  const detectPixelColor = collisionCtx.getImageData(e.x, e.y, 1, 1);
+  const pixelColor = detectPixelColor.data;
+  ravens.forEach((object) => {
+    if (
+      object.randomColors[0] === pixelColor[0] &&
+      object.randomColors[1] === pixelColor[1] &&
+      object.randomColors[2] === pixelColor[2]
+    ) {
+      // 까마귀 클릭 감지되면?
+      object.markedForDeletion = true;
+      score++;
+      explosions.push(new Explosion(object.x, object.y, object.width));
+    }
+  });
 });
 
 function animate(timestamp) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  collisionCtx.clearRect(0, 0, canvas.width, canvas.height);
   let deltaTime = timestamp - lastTime;
   lastTime = timestamp;
   timeToNextRaven += deltaTime;
   if (timeToNextRaven > ravenInterval) {
     ravens.push(new Raven());
     timeToNextRaven = 0;
+    ravens.sort((a, b) => {
+      return a.width - b.width; // width가 클수록 뒤로 미뤄야 나중에 그려지고, 제일 위로 오게 됨
+    });
   }
   drawScore();
-  [...ravens].forEach((object) => object.update(deltaTime));
-  [...ravens].forEach((object) => object.draw());
+  [...ravens, ...explosions].forEach((object) => object.update(deltaTime));
+  [...ravens, ...explosions].forEach((object) => object.draw());
   ravens = ravens.filter((object) => !object.markedForDeletion);
+  explosions = explosions.filter((object) => !object.markedForDeletion);
   requestAnimationFrame(animate);
 }
 animate(0);
