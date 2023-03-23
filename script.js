@@ -106,7 +106,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  class Background {}
+  class Background {
+    constructor(gameWidth, gameHeight) {
+      this.gameWidth = gameWidth;
+      this.gameHeight = gameHeight;
+      this.image = document.getElementById("backgroundImage");
+      this.x = 0;
+      this.y = 0;
+      this.width = 2400;
+      this.height = 720;
+      this.speed = 10;
+    }
+    draw(context) {
+      // 이미지1과 이미지2를 붙인 후 이미지2가 이미지1의 초기 위치에 오면! 이미지들을 맨 처음 위치로 되돌림
+      context.drawImage(this.image, this.x, this.y, this.width, this.height);
+      context.drawImage(
+        this.image,
+        this.x + this.width - this.speed,
+        this.y,
+        this.width,
+        this.height
+      );
+    }
+    update() {
+      this.x -= this.speed;
+      if (this.x < 0 - this.width) this.x = 0;
+    }
+  }
 
   class Enemy {}
 
@@ -116,9 +142,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const input = new InputHandler();
   const player = new Player(canvas.width, canvas.height);
+  const background = new Background(canvas.width, canvas.height);
 
   const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    background.draw(ctx);
+    background.update();
     player.draw(ctx);
     player.update(input);
     requestAnimationFrame(animate);
