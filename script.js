@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = canvas.getContext("2d");
   canvas.width = 800;
   canvas.height = 720;
+  const enemies = [];
 
   class InputHandler {
     constructor() {
@@ -47,8 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
       this.weight = 1;
     }
     draw(context) {
-      context.fillStyle = "white";
-      context.fillRect(this.x, this.y, this.width, this.height);
       context.drawImage(
         this.image,
         this.frameX * this.width,
@@ -134,9 +133,60 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  class Enemy {}
+  class Enemy {
+    constructor(gameWidth, gameHeight) {
+      this.gameWidth = gameWidth;
+      this.gameHeight = gameHeight;
+      this.width = 160;
+      this.height = 119;
+      this.image = document.getElementById("enemyImage");
+      this.x = this.gameWidth;
+      this.y = this.gameHeight - this.height;
+      this.frameX = 0;
+      this.maxFrame = 5;
+      this.fps = 20; // 각 enemy의 프레임을 얼마나 빠르게 움질일지
+      this.frameTimer = 0;
+      this.frameinterval = 1000 / this.fps;
+      this.speed = 8;
+    }
+    draw(context) {
+      context.drawImage(
+        this.image,
+        this.frameX * this.width,
+        0,
+        this.width,
+        this.height,
+        this.x,
+        this.y,
+        this.width,
+        this.height
+      );
+    }
+    update(deltaTime) {
+      if (this.frameTimer > this.frameinterval) {
+        this.frameTimer = 0;
+        if (this.frameX >= this.maxFrame) this.frameX = 0;
+        else this.frameX++;
+      } else {
+        this.frameTimer += deltaTime;
+      }
+      this.x -= this.speed;
+    }
+  }
 
-  const handleEnemies = () => {};
+  const handleEnemies = (deltaTime) => {
+    if (enemyTimer > enemyInterval + randomEnemyInterval) {
+      enemies.push(new Enemy(canvas.width, canvas.height));
+      randomEnemyInterval = Math.random() * 1000 + 500;
+      enemyTimer = 0;
+    } else {
+      enemyTimer += deltaTime;
+    }
+    enemies.forEach((enemy) => {
+      enemy.draw(ctx);
+      enemy.update(deltaTime);
+    });
+  };
 
   const displayStatusText = () => {};
 
@@ -144,13 +194,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const player = new Player(canvas.width, canvas.height);
   const background = new Background(canvas.width, canvas.height);
 
-  const animate = () => {
+  let lastTime = 0; // previous timeStamp
+  let enemyTimer = 0;
+  let enemyInterval = 2000;
+  let randomEnemyInterval = Math.random() * 1000 + 500;
+
+  const animate = (timeStamp) => {
+    const deltaTime = timeStamp - lastTime; // 컴퓨터가 한 애니메이션 프레임 그리는데 필요한 ms
+    lastTime = timeStamp;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     background.draw(ctx);
-    background.update();
+    // background.update();
     player.draw(ctx);
     player.update(input);
+    handleEnemies(deltaTime);
     requestAnimationFrame(animate);
   };
-  animate();
+  animate(0);
 });
