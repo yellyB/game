@@ -43,6 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
       this.image = document.getElementById("playerImage");
       this.frameX = 0;
       this.frameY = 0;
+      this.maxFrame = 8;
+      this.fps = 20; // 각 enemy의 프레임을 얼마나 빠르게 움질일지
+      this.frameTimer = 0;
+      this.frameinterval = 1000 / this.fps;
       this.speed = 0;
       this.vy = 0; // velocity
       this.weight = 1;
@@ -60,7 +64,17 @@ document.addEventListener("DOMContentLoaded", () => {
         this.height
       );
     }
-    update(input) {
+    update(input, deltaTime) {
+      // 애니메이션 컨트롤
+      if (this.frameTimer > this.frameinterval) {
+        this.frameTimer = 0;
+        if (this.frameX >= this.maxFrame) this.frameX = 0;
+        else this.frameX++;
+      } else {
+        this.frameTimer += deltaTime;
+      }
+
+      // 방향키 컨트롤
       if (input.keys.indexOf("ArrowRight") > -1) {
         this.speed = 5;
       } else if (input.keys.indexOf("ArrowLeft") > -1) {
@@ -78,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
         this.speed = 0;
       }
 
-      // 화살표 버튼 움직임
       this.x += this.speed;
 
       // 화면 밖 나갈 경우 처리 (좌우 움직임)
@@ -88,12 +101,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 상하 움직임
       this.y += this.vy;
-      if (!this.onGround()) {
-        this.vy += this.weight;
-        this.frameY = 1;
-      } else {
+      if (this.onGround()) {
         this.vy = 0;
         this.frameY = 0;
+        this.maxFrame = 8; // 달리는 모션은 프레임 9개고 점프는 프레임 개수 7임. 그래서 분리해서 총 프레임 설정해줌
+      } else {
+        this.vy += this.weight;
+        this.frameY = 1;
+        this.maxFrame = 6;
       }
       // 많이 점프하면(up키 오래 누르면) 떨어질 때 땅에 박혀버리는 버그 발생.
       // 이유: vy가 0으로 초기화 되고나서도 값이 바뀌는 랜덤한 경우가 생겨서 => 땅에 박혀버렸으면 처음 위치로 초기화
@@ -206,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
     background.draw(ctx);
     // background.update();
     player.draw(ctx);
-    player.update(input);
+    player.update(input, deltaTime);
     handleEnemies(deltaTime);
     requestAnimationFrame(animate);
   };
