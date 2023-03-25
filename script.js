@@ -3,7 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = canvas.getContext("2d");
   canvas.width = 800;
   canvas.height = 720;
-  const enemies = [];
+  let enemies = [];
+  let score = 0;
 
   class InputHandler {
     constructor() {
@@ -163,6 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.frameTimer = 0;
       this.frameinterval = 1000 / this.fps;
       this.speed = 8;
+      this.markedForDeletion = false;
     }
     draw(context) {
       context.drawImage(
@@ -186,6 +188,10 @@ document.addEventListener("DOMContentLoaded", () => {
         this.frameTimer += deltaTime;
       }
       this.x -= this.speed;
+      if (this.x < 0 - this.width) {
+        this.markedForDeletion = true; // 화면 밖으로 나갔으면 삭제하기 위해
+        score++;
+      }
     }
   }
 
@@ -201,9 +207,14 @@ document.addEventListener("DOMContentLoaded", () => {
       enemy.draw(ctx);
       enemy.update(deltaTime);
     });
+    enemies = enemies.filter((enemy) => !enemy.markedForDeletion);
   };
 
-  const displayStatusText = () => {};
+  const displayStatusText = (context) => {
+    context.fillStyle = "black";
+    context.font = "40px Helvetica";
+    context.fillText(`Score: ${score}`, 20, 50);
+  };
 
   const input = new InputHandler();
   const player = new Player(canvas.width, canvas.height);
@@ -223,6 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
     player.draw(ctx);
     player.update(input, deltaTime);
     handleEnemies(deltaTime);
+    displayStatusText(ctx);
     requestAnimationFrame(animate);
   };
   animate(0);
