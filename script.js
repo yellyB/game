@@ -65,6 +65,12 @@ document.addEventListener("DOMContentLoaded", () => {
         Math.PI * 2
       );
       context.stroke();
+
+      context.strokeStyle = "blue";
+      context.beginPath();
+      context.arc(this.x, this.y, this.width / 2, 0, Math.PI * 2);
+      context.stroke();
+
       context.drawImage(
         this.image,
         this.frameX * this.width,
@@ -87,8 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
        *  피타고리스 정리를 이용해서 빗변의 거리를 구한다. 이게 곧 두 원(hitbox)간의 거리가 된다.
        */
       enemies.forEach((enemy) => {
-        const dx = enemy.x - this.x;
-        const dy = enemy.y - this.y;
+        const dx = enemy.x + enemy.width / 2 - (this.x + this.width / 2);
+        const dy = enemy.y + enemy.height / 2 - (this.y + this.height / 2);
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < enemy.width / 2 + this.width / 2) {
           gameOver = true;
@@ -206,6 +212,12 @@ document.addEventListener("DOMContentLoaded", () => {
         Math.PI * 2
       );
       context.stroke();
+
+      context.strokeStyle = "blue";
+      context.beginPath();
+      context.arc(this.x, this.y, this.width / 2, 0, Math.PI * 2);
+      context.stroke();
+
       context.drawImage(
         this.image,
         this.frameX * this.width,
