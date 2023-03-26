@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   canvas.height = 720;
   let enemies = [];
   let score = 0;
+  let gameOver = false;
 
   class InputHandler {
     constructor() {
@@ -53,6 +54,17 @@ document.addEventListener("DOMContentLoaded", () => {
       this.weight = 1;
     }
     draw(context) {
+      context.strokeStyle = "white";
+      context.strokeRect(this.x, this.y, this.width, this.height);
+      context.beginPath();
+      context.arc(
+        this.x + this.width / 2,
+        this.y + this.height / 2,
+        this.width / 2,
+        0,
+        Math.PI * 2
+      );
+      context.stroke();
       context.drawImage(
         this.image,
         this.frameX * this.width,
@@ -65,7 +77,23 @@ document.addEventListener("DOMContentLoaded", () => {
         this.height
       );
     }
-    update(input, deltaTime) {
+    update(input, deltaTime, enemies) {
+      /** [충돌]
+       *  player 와 enemy의 두 원(hitbox) 간 중심점 거리를 구해서
+       *  그 거리가 각 원의 반지름 합계보다 작으면 충돌인걸 알 수 있음
+       *
+       *  enemy와 player의 x,y좌표를 알기 때문에
+       *  이걸로 두 오브젝트 간 x,y 길이를 구하고(x: 밑변, y: 높이)
+       *  피타고리스 정리를 이용해서 빗변의 거리를 구한다. 이게 곧 두 원(hitbox)간의 거리가 된다.
+       */
+      enemies.forEach((enemy) => {
+        const dx = enemy.x - this.x;
+        const dy = enemy.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < enemy.width / 2 + this.width / 2) {
+          gameOver = true;
+        }
+      });
       // 애니메이션 컨트롤
       if (this.frameTimer > this.frameinterval) {
         this.frameTimer = 0;
@@ -167,6 +195,17 @@ document.addEventListener("DOMContentLoaded", () => {
       this.markedForDeletion = false;
     }
     draw(context) {
+      context.strokeStyle = "white";
+      context.strokeRect(this.x, this.y, this.width, this.height);
+      context.beginPath();
+      context.arc(
+        this.x + this.width / 2,
+        this.y + this.height / 2,
+        this.width / 2,
+        0,
+        Math.PI * 2
+      );
+      context.stroke();
       context.drawImage(
         this.image,
         this.frameX * this.width,
@@ -190,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.x -= this.speed;
       if (this.x < 0 - this.width) {
         this.markedForDeletion = true; // 화면 밖으로 나갔으면 삭제하기 위해
-        score++;
+        score++; // 화면 밖으로 나가면 피했다고 간주하고 점수 증가
       }
     }
   }
@@ -211,9 +250,18 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const displayStatusText = (context) => {
-    context.fillStyle = "black";
     context.font = "40px Helvetica";
+    context.fillStyle = "black";
+    context.fillText(`Score: ${score}`, 22, 52);
+    context.fillStyle = "white";
     context.fillText(`Score: ${score}`, 20, 50);
+    if (gameOver) {
+      context.textAlign = "center";
+      context.fillStyle = "black";
+      context.fillText(`GAME OVER`, canvas.width / 2 + 2, 202);
+      context.fillStyle = "white";
+      context.fillText(`GAME OVER`, canvas.width / 2, 200);
+    }
   };
 
   const input = new InputHandler();
@@ -232,10 +280,11 @@ document.addEventListener("DOMContentLoaded", () => {
     background.draw(ctx);
     // background.update();
     player.draw(ctx);
-    player.update(input, deltaTime);
+    player.update(input, deltaTime, enemies);
     handleEnemies(deltaTime);
     displayStatusText(ctx);
-    requestAnimationFrame(animate);
+
+    if (!gameOver) requestAnimationFrame(animate);
   };
   animate(0);
 });
