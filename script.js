@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   class InputHandler {
     constructor() {
       this.keys = [];
+      this.touchY = "";
+      this.touchTreshold = 30;
       window.addEventListener("keydown", (e) => {
         if (
           (e.key === "ArrowDown" ||
@@ -19,6 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
           this.keys.indexOf(e.key) === -1
         ) {
           this.keys.push(e.key);
+        } else if (e.key === "Enter" && gameOver) {
+          restartGame();
         }
       });
       window.addEventListener("keyup", (e) => {
@@ -31,6 +35,28 @@ document.addEventListener("DOMContentLoaded", () => {
           this.keys.splice(this.keys.indexOf(e.key), 1);
         }
       });
+      window.addEventListener("touchstart", (e) => {
+        this.touchY = e.changedTouches[0].pageY;
+      });
+      window.addEventListener("touchmove", (e) => {
+        const swipeDistance = this.touchY - e.changedTouches[0].pageY; // this.touchY가 맨 처음 클릭 위치. e.changedTouches[0].pageY가 이동중 현재 좌표.
+        if (
+          swipeDistance > this.touchTreshold &&
+          this.keys.indexOf("swipe up") === -1
+        ) {
+          this.keys.push("swipe up");
+        } else if (
+          swipeDistance < -this.touchTreshold &&
+          this.keys.indexOf("swipe down") === -1
+        ) {
+          this.keys.push("swipe down");
+          if (gameOver) restartGame();
+        }
+      });
+      window.addEventListener("touchend", () => {
+        this.keys.splice(this.keys.indexOf("swipe up"), 1);
+        this.keys.splice(this.keys.indexOf("swipe down"), 1);
+      });
     }
   }
 
@@ -40,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.gameHeight = gameHeight;
       this.width = 200;
       this.height = 200;
-      this.x = 0;
+      this.x = 100;
       this.y = this.gameHeight - this.height;
       this.image = document.getElementById("playerImage");
       this.frameX = 0;
@@ -54,22 +80,22 @@ document.addEventListener("DOMContentLoaded", () => {
       this.weight = 1;
     }
     draw(context) {
-      context.strokeStyle = "white";
-      context.strokeRect(this.x, this.y, this.width, this.height);
-      context.beginPath();
-      context.arc(
-        this.x + this.width / 2,
-        this.y + this.height / 2,
-        this.width / 2,
-        0,
-        Math.PI * 2
-      );
-      context.stroke();
+      // context.strokeStyle = "white";
+      // context.strokeRect(this.x, this.y, this.width, this.height);
+      // context.beginPath();
+      // context.arc(
+      //   this.x + this.width / 2,
+      //   this.y + this.height / 2,
+      //   this.width / 2,
+      //   0,
+      //   Math.PI * 2
+      // );
+      // context.stroke();
 
-      context.strokeStyle = "blue";
-      context.beginPath();
-      context.arc(this.x, this.y, this.width / 2, 0, Math.PI * 2);
-      context.stroke();
+      // context.strokeStyle = "blue";
+      // context.beginPath();
+      // context.arc(this.x, this.y, this.width / 2, 0, Math.PI * 2);
+      // context.stroke();
 
       context.drawImage(
         this.image,
@@ -153,6 +179,12 @@ document.addEventListener("DOMContentLoaded", () => {
     onGround() {
       return this.y >= this.gameHeight - this.height; // 맨처음엔 y좌표를 gameHeight-height로 설정했기 때문에, y가 더 작아지면 위로 올라간거임 (=공중에 있음)
     }
+    restart() {
+      this.x = 100;
+      this.y = this.gameHeight - this.height;
+      this.maxFrame = 8;
+      this.frameY = 0;
+    }
   }
 
   class Background {
@@ -181,6 +213,9 @@ document.addEventListener("DOMContentLoaded", () => {
       this.x -= this.speed;
       if (this.x < 0 - this.width) this.x = 0;
     }
+    restart() {
+      this.x = 0;
+    }
   }
 
   class Enemy {
@@ -201,22 +236,22 @@ document.addEventListener("DOMContentLoaded", () => {
       this.markedForDeletion = false;
     }
     draw(context) {
-      context.strokeStyle = "white";
-      context.strokeRect(this.x, this.y, this.width, this.height);
-      context.beginPath();
-      context.arc(
-        this.x + this.width / 2,
-        this.y + this.height / 2,
-        this.width / 2,
-        0,
-        Math.PI * 2
-      );
-      context.stroke();
+      // context.strokeStyle = "white";
+      // context.strokeRect(this.x, this.y, this.width, this.height);
+      // context.beginPath();
+      // context.arc(
+      //   this.x + this.width / 2,
+      //   this.y + this.height / 2,
+      //   this.width / 2,
+      //   0,
+      //   Math.PI * 2
+      // );
+      // context.stroke();
 
-      context.strokeStyle = "blue";
-      context.beginPath();
-      context.arc(this.x, this.y, this.width / 2, 0, Math.PI * 2);
-      context.stroke();
+      // context.strokeStyle = "blue";
+      // context.beginPath();
+      // context.arc(this.x, this.y, this.width / 2, 0, Math.PI * 2);
+      // context.stroke();
 
       context.drawImage(
         this.image,
@@ -262,6 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const displayStatusText = (context) => {
+    context.textAlign = "left";
     context.font = "40px Helvetica";
     context.fillStyle = "black";
     context.fillText(`Score: ${score}`, 22, 52);
@@ -270,10 +306,27 @@ document.addEventListener("DOMContentLoaded", () => {
     if (gameOver) {
       context.textAlign = "center";
       context.fillStyle = "black";
-      context.fillText(`GAME OVER`, canvas.width / 2 + 2, 202);
+      context.fillText(
+        `GAME OVER, press Enter to restart`,
+        canvas.width / 2 + 2,
+        202
+      );
       context.fillStyle = "white";
-      context.fillText(`GAME OVER`, canvas.width / 2, 200);
+      context.fillText(
+        `GAME OVER, press Enter to restart`,
+        canvas.width / 2,
+        200
+      );
     }
+  };
+
+  const restartGame = () => {
+    player.restart();
+    background.restart();
+    enemies = [];
+    score = 0;
+    gameOver = false;
+    animate(0); // InputHandler에서 엔터&게임오버 시 다시 시작하도록 하였는데, animate 재귀에서 gameOver됐을 때 더이상 실행 안하도록 막았기 때문에 animate 다시 돌려줌
   };
 
   const input = new InputHandler();
