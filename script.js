@@ -3,9 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = canvas.getContext("2d");
   canvas.width = 800;
   canvas.height = 720;
+  const INIT_X = 50;
   let enemies = [];
   let score = 0;
   let gameOver = false;
+  const fullScreenButton = document.getElementById("fullScreenButton");
 
   class InputHandler {
     constructor() {
@@ -66,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.gameHeight = gameHeight;
       this.width = 200;
       this.height = 200;
-      this.x = 100;
+      this.x = INIT_X;
       this.y = this.gameHeight - this.height;
       this.image = document.getElementById("playerImage");
       this.frameX = 0;
@@ -76,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.frameTimer = 0;
       this.frameinterval = 1000 / this.fps;
       this.speed = 0;
+      this.speedAmount = 8;
       this.vy = 0; // velocity
       this.weight = 1;
     }
@@ -137,10 +140,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 방향키 컨트롤
       if (input.keys.indexOf("ArrowRight") > -1) {
-        this.speed = 5;
+        this.speed = this.speedAmount;
       } else if (input.keys.indexOf("ArrowLeft") > -1) {
-        this.speed = -5;
-      } else if (input.keys.indexOf("ArrowUp") > -1 && this.onGround()) {
+        this.speed = -this.speedAmount;
+      } else if (
+        (input.keys.indexOf("ArrowUp") > -1 ||
+          input.keys.indexOf("swipe up") > -1) &&
+        this.onGround()
+      ) {
         // onGround로 땅에 있을때만 점프하도록. 안그러면 점프 중 상태에서 up키 누르고 있으면 계속 점프높이 추가됨
         /**[점프 로직]:
          *  1. vy를 음수값으로 설정하고
@@ -180,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return this.y >= this.gameHeight - this.height; // 맨처음엔 y좌표를 gameHeight-height로 설정했기 때문에, y가 더 작아지면 위로 올라간거임 (=공중에 있음)
     }
     restart() {
-      this.x = 100;
+      this.x = INIT_X;
       this.y = this.gameHeight - this.height;
       this.maxFrame = 8;
       this.frameY = 0;
@@ -307,13 +314,13 @@ document.addEventListener("DOMContentLoaded", () => {
       context.textAlign = "center";
       context.fillStyle = "black";
       context.fillText(
-        `GAME OVER, press Enter to restart`,
+        `GAME OVER, press Enter or swipe down to restart`,
         canvas.width / 2 + 2,
         202
       );
       context.fillStyle = "white";
       context.fillText(
-        `GAME OVER, press Enter to restart`,
+        `GAME OVER, press Enter or swipe down to restart`,
         canvas.width / 2,
         200
       );
@@ -328,6 +335,19 @@ document.addEventListener("DOMContentLoaded", () => {
     gameOver = false;
     animate(0); // InputHandler에서 엔터&게임오버 시 다시 시작하도록 하였는데, animate 재귀에서 gameOver됐을 때 더이상 실행 안하도록 막았기 때문에 animate 다시 돌려줌
   };
+
+  const toggleFullScreen = () => {
+    if (document.fullScreenElement) {
+      document.exitFullscreen();
+    } else {
+      canvas
+        .requestFullscreen()
+        .catch((err) =>
+          alert(`Error, can't enable full-screen mode: ${err.message}`)
+        );
+    }
+  };
+  fullScreenButton.addEventListener("click", toggleFullScreen);
 
   const input = new InputHandler();
   const player = new Player(canvas.width, canvas.height);
