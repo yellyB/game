@@ -81,15 +81,16 @@ document.addEventListener("DOMContentLoaded", () => {
       this.speedAmount = 8;
       this.vy = 0; // velocity
       this.weight = 1;
+      this.radius = this.width / 3;
     }
     draw(context) {
       // context.strokeStyle = "white";
-      // context.strokeRect(this.x, this.y, this.width, this.height);
+      // // context.strokeRect(this.x, this.y, this.width, this.height);
       // context.beginPath();
       // context.arc(
       //   this.x + this.width / 2,
-      //   this.y + this.height / 2,
-      //   this.width / 2,
+      //   this.y + this.height / 2 + 20,
+      //   this.radius,
       //   0,
       //   Math.PI * 2
       // );
@@ -122,10 +123,10 @@ document.addEventListener("DOMContentLoaded", () => {
        *  피타고리스 정리를 이용해서 빗변의 거리를 구한다. 이게 곧 두 원(hitbox)간의 거리가 된다.
        */
       enemies.forEach((enemy) => {
-        const dx = enemy.x + enemy.width / 2 - (this.x + this.width / 2);
-        const dy = enemy.y + enemy.height / 2 - (this.y + this.height / 2);
+        const dx = enemy.x + enemy.width / 2 - 20 - (this.x + this.width / 2);
+        const dy = enemy.y + enemy.height / 2 - (this.y + this.height / 2 + 20);
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < enemy.width / 2 + this.width / 2) {
+        if (distance < enemy.radius + this.radius) {
           gameOver = true;
         }
       });
@@ -241,19 +242,19 @@ document.addEventListener("DOMContentLoaded", () => {
       this.frameinterval = 1000 / this.fps;
       this.speed = 8;
       this.markedForDeletion = false;
+      this.radius = this.width / 3;
     }
     draw(context) {
       // context.strokeStyle = "white";
-      // context.strokeRect(this.x, this.y, this.width, this.height);
+      // // context.strokeRect(this.x, this.y, this.width, this.height);
       // context.beginPath();
       // context.arc(
-      //   this.x + this.width / 2,
+      //   this.x + this.width / 2 - 20,
       //   this.y + this.height / 2,
-      //   this.width / 2,
+      //   this.radius,
       //   0,
       //   Math.PI * 2
       // );
-      // context.stroke();
 
       // context.strokeStyle = "blue";
       // context.beginPath();
@@ -271,6 +272,8 @@ document.addEventListener("DOMContentLoaded", () => {
         this.width,
         this.height
       );
+
+      context.stroke();
     }
     update(deltaTime) {
       if (this.frameTimer > this.frameinterval) {
