@@ -3,6 +3,8 @@ import {
   StandingRight,
   SittingLeft,
   SittingRight,
+  RunningLeft,
+  RunningRight,
 } from "./state.js";
 
 export default class Player {
@@ -14,6 +16,8 @@ export default class Player {
       new StandingRight(this),
       new SittingLeft(this),
       new SittingRight(this),
+      new RunningLeft(this),
+      new RunningRight(this),
     ];
     this.currentState = this.states[0];
     this.image = document.getElementById("dogImage");
