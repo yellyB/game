@@ -5,11 +5,14 @@ export const states = {
   SITTING_RIGHT: 3,
   RUNNING_LEFT: 4,
   RUNNING_RIGHT: 5,
+  JUMPING_LEFT: 6,
+  JUMPING_RIGHT: 7,
 };
 
 class State {
   constructor(state) {
     this.state = state;
+    this.VY = 20;
   }
 }
 
@@ -26,6 +29,7 @@ export class StandingLeft extends State {
     if (input === "right ↓") this.player.setState(states.RUNNING_RIGHT);
     else if (input === "left ↓") this.player.setState(states.RUNNING_LEFT);
     else if (input === "down ↓") this.player.setState(states.SITTING_LEFT);
+    else if (input === "up ↓") this.player.setState(states.JUMPING_LEFT);
   }
 }
 
@@ -42,6 +46,7 @@ export class StandingRight extends State {
     if (input === "left ↓") this.player.setState(states.RUNNING_LEFT);
     else if (input === "right ↓") this.player.setState(states.RUNNING_RIGHT);
     else if (input === "down ↓") this.player.setState(states.SITTING_RIGHT);
+    else if (input === "up ↓") this.player.setState(states.JUMPING_RIGHT);
   }
 }
 
@@ -104,5 +109,39 @@ export class RunningRight extends State {
     if (input === "left ↓") this.player.setState(states.RUNNING_LEFT);
     else if (input === "right ↑") this.player.setState(states.STANDING_RIGHT);
     else if (input === "down ↓") this.player.setState(states.SITTING_RIGHT);
+  }
+}
+
+export class JumpingLeft extends State {
+  constructor(player) {
+    super("JUMPING LEFT");
+    this.player = player;
+  }
+  enter() {
+    this.player.frameY = 3;
+    // onGound 체크 안하면 점프 후 좌우 번갈아 눌렀을때 계속 y 좌표 증가하게됨
+    if (this.player.onGround()) this.player.vy -= this.VY;
+    this.player.speed = -this.player.maxSpeed * 0.5;
+  }
+  handleInput(input) {
+    if (input === "right ↓") this.player.setState(states.JUMPING_RIGHT);
+    else if (this.player.onGround()) this.player.setState(states.STANDING_LEFT);
+  }
+}
+
+export class JumpingRight extends State {
+  constructor(player) {
+    super("JUMPING RIGHT");
+    this.player = player;
+  }
+  enter() {
+    this.player.frameY = 2;
+    if (this.player.onGround()) this.player.vy -= this.VY;
+    this.player.speed = this.player.maxSpeed * 0.5;
+  }
+  handleInput(input) {
+    if (input === "right ↓") this.player.setState(states.JUMPING_LEFT);
+    else if (this.player.onGround())
+      this.player.setState(states.STANDING_RIGHT);
   }
 }
