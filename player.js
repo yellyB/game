@@ -6,7 +6,7 @@ export class Player {
     this.width = 100;
     this.height = 91.3;
     this.x = 0;
-    this.y = this.game.height - this.height;
+    this.y = this.game.height - this.height - this.game.groundMargin;
     this.vy = 0;
     this.weight = 0.5;
     this.image = document.getElementById("player");
@@ -73,7 +73,7 @@ export class Player {
   }
   onGround() {
     // 이미지의 왼상단 모서리와 (전체 높이 - 이미지높이) 포인트를 비교
-    return this.y >= this.game.height - this.height;
+    return this.y >= this.game.height - this.height - this.game.groundMargin;
   }
   setState(state) {
     this.currentState = this.states[state];
