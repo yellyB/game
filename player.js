@@ -75,8 +75,9 @@ export class Player {
     // 이미지의 왼상단 모서리와 (전체 높이 - 이미지높이) 포인트를 비교
     return this.y >= this.game.height - this.height - this.game.groundMargin;
   }
-  setState(state) {
+  setState(state, speed) {
     this.currentState = this.states[state];
+    this.game.speed = this.game.maxSpeed * speed;
     this.currentState.enter();
   }
 }
