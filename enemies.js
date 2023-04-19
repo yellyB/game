@@ -59,10 +59,6 @@ export class FlyingEnemy extends Enemy {
     this.angle += this.va;
     this.y += Math.sin(this.angle);
   }
-  // draw() {
-  //   console.log("fsdkfj");
-  //   // super.draw();
-  // }
 }
 
 export class GroundEnemy extends Enemy {
@@ -80,4 +76,35 @@ export class GroundEnemy extends Enemy {
   }
 }
 
-export class ClimbingEnemy extends Enemy {}
+export class ClimbingEnemy extends Enemy {
+  constructor(game) {
+    super();
+    this.game = game;
+    this.width = 120;
+    this.height = 144;
+    this.x = this.game.width;
+    this.y = Math.random() * this.game.height * 0.5;
+    this.speedX = 0;
+    this.speedY = Math.random() > 0.5 ? 1 : -1;
+    this.maxFrame = 5;
+    this.image = document.getElementById("enemy_spider_big");
+  }
+  update(deltaTime) {
+    super.update(deltaTime);
+    // 바닥 찍으면 다시 위로
+    if (this.y > this.game.height - this.height - this.game.groundMargin) {
+      this.speedY *= -1;
+    }
+    if (this.y < -this.height) {
+      this.markedForDeletion = true;
+    }
+  }
+  draw(context) {
+    const startX = this.x + this.width / 2;
+    super.draw(context);
+    context.beginPath();
+    context.moveTo(startX, 0);
+    context.lineTo(startX, this.y + 50);
+    context.stroke();
+  }
+}
