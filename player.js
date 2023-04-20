@@ -27,6 +27,8 @@ export class Player {
     this.currentState.enter();
   }
   update(input, deltaTime) {
+    this.checkCollision();
+
     this.currentState.handleInput(input);
     // 좌우
     this.x += this.speed;
@@ -70,6 +72,9 @@ export class Player {
       this.width,
       this.height
     );
+    if (this.game.debug) {
+      context.strokeRect(this.x, this.y, this.width, this.height);
+    }
   }
   onGround() {
     // 이미지의 왼상단 모서리와 (전체 높이 - 이미지높이) 포인트를 비교
@@ -79,5 +84,21 @@ export class Player {
     this.currentState = this.states[state];
     this.game.speed = this.game.maxSpeed * speed;
     this.currentState.enter();
+  }
+  checkCollision() {
+    this.game.enemies.forEach((enemy) => {
+      if (
+        enemy.x < this.x + this.width &&
+        enemy.x + enemy.width > this.x &&
+        enemy.y < this.y + this.height &&
+        enemy.y + enemy.height > this.y
+      ) {
+        // 충돌
+        enemy.markedForDeletion = true;
+        this.game.score++;
+      } else {
+        //  충돌  x
+      }
+    });
   }
 }
