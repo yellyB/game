@@ -47,7 +47,11 @@ export class Running extends State {
   }
   handleInput(input) {
     this.game.particles.push(
-      new Dust(this.game, this.game.player.x, this.game.player.y)
+      new Dust(
+        this.game,
+        this.game.player.x + this.game.player.width * 0.6,
+        this.game.player.y + this.game.player.height
+      )
     );
     if (input.includes("ArrowDown"))
       this.game.player.setState(states.SITTING, 0);
