@@ -46,7 +46,7 @@ export class Running extends State {
     this.game.player.maxFrame = 8;
   }
   handleInput(input) {
-    this.game.particles.push(
+    this.game.particles.unshift(
       new Dust(
         this.game,
         this.game.player.x + this.game.player.width * 0.6,
@@ -105,7 +105,8 @@ export class Rolling extends State {
     this.game.player.maxFrame = 6;
   }
   handleInput(input) {
-    this.game.particles.push(
+    // unshift: main.js 에서 this.maxParticles로 제한하여 배열 자를때, 새로 생긴 애가 잘리는것 막기 위해 처음에 집어넣는다.
+    this.game.particles.unshift(
       new Fire(
         this.game,
         this.game.player.x + this.game.player.width * 0.5,
