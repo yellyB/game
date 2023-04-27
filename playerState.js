@@ -32,6 +32,8 @@ export class Sitting extends State {
       this.game.player.setState(states.RUNNING, 1);
     } else if (input.includes(" ")) {
       this.game.player.setState(states.ROLLING, 2);
+    } else if (input.includes("ArrowUp")) {
+      this.game.player.setState(states.JUMPING, 0);
     }
   }
 }
@@ -76,6 +78,8 @@ export class Jumping extends State {
       this.game.player.setState(states.FALLING, 1);
     } else if (input.includes(" ")) {
       this.game.player.setState(states.ROLLING, 2);
+    } else if (input.includes("ArrowDown")) {
+      this.game.player.setState(states.DIVING, 0);
     }
   }
 }
@@ -90,8 +94,13 @@ export class Falling extends State {
     this.game.player.maxFrame = 6;
   }
   handleInput(input) {
-    if (this.game.player.onGround())
+    if (this.game.player.onGround()) {
       this.game.player.setState(states.RUNNING, 1);
+    } else if (input.includes(" ")) {
+      this.game.player.setState(states.ROLLING, 2);
+    } else if (input.includes("ArrowDown")) {
+      this.game.player.setState(states.DIVING, 0);
+    }
   }
 }
 
@@ -123,6 +132,33 @@ export class Rolling extends State {
       this.game.player.onGround()
     ) {
       this.game.player.vy -= 20;
+    }
+  }
+}
+
+export class Diving extends State {
+  constructor(game) {
+    super("DIVING", game);
+  }
+  enter() {
+    this.game.player.frameX = 0;
+    this.game.player.frameY = 6;
+    this.game.player.maxFrame = 6;
+    this.game.player.vy = 15;
+  }
+  handleInput(input) {
+    // unshift: main.js 에서 this.maxParticles로 제한하여 배열 자를때, 새로 생긴 애가 잘리는것 막기 위해 처음에 집어넣는다.
+    this.game.particles.unshift(
+      new Fire(
+        this.game,
+        this.game.player.x + this.game.player.width * 0.5,
+        this.game.player.y + this.game.player.height * 0.5
+      )
+    );
+    if (this.game.player.onGround()) {
+      this.game.player.setState(states.RUNNING, 1);
+    } else if (input.includes(" ") && this.game.player.onGround()) {
+      this.game.player.setState(states.ROLLING, 2);
     }
   }
 }
