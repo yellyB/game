@@ -43,6 +43,7 @@ export class Player {
     else if (input.includes("ArrowRight")) this.speed = this.maxSpeed;
     else this.speed = 0;
 
+    // 좌우 바운더리 설정
     if (this.x < 0) this.x = 0;
     if (this.x > this.game.width - this.width)
       this.x = this.game.width - this.width;
@@ -57,6 +58,10 @@ export class Player {
     this.y += this.vy;
     if (!this.onGround()) this.vy += this.weight;
     else this.vy = 0;
+
+    // 상하 바운더리 설정 (다이빙 할 때 간헐적 발생하는 땅에 박히는 버그 방지)
+    if (this.y > this.game.height - this.height - this.game.groundMargin)
+      this.y = this.game.height - this.height - this.game.groundMargin;
 
     // sprite animation
     if (this.frameTimer > this.frameInterval) {

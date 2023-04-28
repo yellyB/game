@@ -1,4 +1,4 @@
-import { Dust, Fire } from "./particles.js";
+import { Dust, Fire, Splash } from "./particles.js";
 
 // player.js 파일 중 setState()에서 this.states에 접근할 때 사용할 인덱스 정의
 export const states = {
@@ -157,6 +157,15 @@ export class Diving extends State {
     );
     if (this.game.player.onGround()) {
       this.game.player.setState(states.RUNNING, 1);
+      for (let i = 0; i < 30; i++) {
+        this.game.particles.unshift(
+          new Splash(
+            this.game,
+            this.game.player.x + this.game.player.width * 0.5,
+            this.game.player.y + this.game.player.height
+          )
+        );
+      }
     } else if (input.includes(" ") && this.game.player.onGround()) {
       this.game.player.setState(states.ROLLING, 2);
     }
