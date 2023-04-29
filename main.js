@@ -37,6 +37,7 @@ window.addEventListener("load", () => {
     update(deltaTime) {
       this.background.update();
       this.player.update(this.input.keys, deltaTime);
+
       // handle Enemies
       if (this.enemyTimer > this.enemyInterval) {
         this.addEnemy();
@@ -49,6 +50,8 @@ window.addEventListener("load", () => {
         if (enemy.markedForDeletion)
           this.enemies.splice(this.enemies.indexOf(enemy), 1);
       });
+
+      // handle particles
       this.particles.forEach((particle, index) => {
         particle.update();
         if (particle.markedForDeletion) this.particles.splice(index, 1);

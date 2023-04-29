@@ -23,3 +23,18 @@
 #fire {
   display: none;
 }
+
+.guide_text {
+  position: absolute;
+  top: 77%;
+  left: 27%;
+}
+.guide_text > p {
+  margin-top: 4px;
+  font-size: 18px;
+}
+.guide_text > p.text_gray {
+  margin-top: 6px;
+  font-size: 14px;
+  color: red;
+}
