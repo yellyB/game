@@ -20,14 +20,16 @@
 #enemy_fly,
 #enemy_plant,
 #enemy_spider_big,
-#fire {
+#fire,
+#collisionAnimation {
   display: none;
 }
 
 .guide_text {
   position: absolute;
-  top: 77%;
-  left: 27%;
+  top: calc(50% + 330px);
+  left: calc(50% - 150px);
+  transform: translate(-50%, -50%);
 }
 .guide_text > p {
   margin-top: 4px;
