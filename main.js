@@ -29,13 +29,20 @@ window.addEventListener("load", () => {
       this.maxParticles = 200;
       this.enemyTimer = 0;
       this.enemyInterval = 1000;
-      this.debug = true;
+      this.debug = false;
       this.score = 0;
       this.fontColor = "black";
+      this.time = 0;
+      this.maxTime = 2000;
+      this.timeOver = false;
       this.player.currentState = this.player.states[0];
       this.player.currentState.enter();
     }
     update(deltaTime) {
+      this.time += deltaTime;
+      if (this.time > this.maxTime) {
+        this.timeOver = true;
+      }
       this.background.update();
       this.player.update(this.input.keys, deltaTime);
 
@@ -102,7 +109,8 @@ window.addEventListener("load", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     game.draw(ctx, 0);
     game.update(deltaTime);
-    requestAnimationFrame(animate);
+
+    if (!game.timeOver) requestAnimationFrame(animate);
   };
   animate(0);
 });
