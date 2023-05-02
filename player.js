@@ -41,9 +41,15 @@ export class Player {
 
     this.currentState.handleInput(input);
     // 좌우
+    // - hit 상태일경우 움직임 제한
     this.x += this.speed;
-    if (input.includes("ArrowLeft")) this.speed = -this.maxSpeed;
-    else if (input.includes("ArrowRight")) this.speed = this.maxSpeed;
+    if (input.includes("ArrowLeft") && this.currentState !== this.states[6])
+      this.speed = -this.maxSpeed;
+    else if (
+      input.includes("ArrowRight") &&
+      this.currentState !== this.states[6]
+    )
+      this.speed = this.maxSpeed;
     else this.speed = 0;
 
     // 좌우 바운더리 설정

@@ -5,6 +5,12 @@ export class UI {
     this.fontFamily = "Helvetica";
   }
   draw(context) {
+    context.save();
+    context.shadowOffsetX = 2;
+    context.shadowOffsetY = 2;
+    context.shadowColor = "white";
+    context.shadowBlur = 0;
+
     context.font = `${this.fontSize}px  ${this.fontFamily}`;
     context.textAlign = "left";
     context.fillStyle = this.game.fontColor;
@@ -46,5 +52,6 @@ export class UI {
         );
       }
     }
+    context.restore();
   }
 }
