@@ -29,11 +29,27 @@ export class Background {
     this.game = game;
     this.width = 1667;
     this.height = 500;
-    this.layer1Image = document.getElementById("layer1");
-    this.layer2Image = document.getElementById("layer2");
-    this.layer3Image = document.getElementById("layer3");
-    this.layer4Image = document.getElementById("layer4");
-    this.layer5Image = document.getElementById("layer5");
+    this.mode = this.game.backgroundMode;
+    this.setBackground();
+  }
+  update(mode) {
+    this.backgroundLayers.forEach((layer) => {
+      layer.update();
+    });
+    this.mode = mode;
+    this.setBackground();
+  }
+  draw(context) {
+    this.backgroundLayers.forEach((layer) => {
+      layer.draw(context);
+    });
+  }
+  setBackground() {
+    this.layer1Image = document.getElementById(`${this.mode}_layer1`);
+    this.layer2Image = document.getElementById(`${this.mode}_layer2`);
+    this.layer3Image = document.getElementById(`${this.mode}_layer3`);
+    this.layer4Image = document.getElementById(`${this.mode}_layer4`);
+    this.layer5Image = document.getElementById(`${this.mode}_layer5`);
     this.layer1 = new Layer(
       this.game,
       this.width,
@@ -76,15 +92,5 @@ export class Background {
       this.layer4,
       this.layer5,
     ];
-  }
-  update() {
-    this.backgroundLayers.forEach((layer) => {
-      layer.update();
-    });
-  }
-  draw(context) {
-    this.backgroundLayers.forEach((layer) => {
-      layer.draw(context);
-    });
   }
 }

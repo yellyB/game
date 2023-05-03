@@ -12,16 +12,22 @@
 }
 
 #player,
-#layer1,
-#layer2,
-#layer3,
-#layer4,
-#layer5,
+#city_layer1,
+#city_layer2,
+#city_layer3,
+#city_layer4,
+#city_layer5,
+#forest_layer1,
+#forest_layer2,
+#forest_layer3,
+#forest_layer4,
+#forest_layer5,
 #enemy_fly,
 #enemy_plant,
 #enemy_spider_big,
 #fire,
-#collisionAnimation {
+#collisionAnimation,
+#life {
   display: none;
 }
 
@@ -39,4 +45,17 @@
   margin-top: 6px;
   font-size: 14px;
   color: red;
+}
+
+.controls {
+  position: absolute;
+  z-index: 10;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.controls,
+select,
+option {
+  font-size: 25px;
 }

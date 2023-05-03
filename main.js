@@ -4,9 +4,13 @@ import { Background } from "./background.js";
 import { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "./enemies.js";
 import { UI } from "./UI.js";
 
+let mode = "city";
+const dropdown = document.getElementById("backgrounds");
+dropdown.addEventListener("change", function (e) {
+  mode = e.target.value;
+});
+
 window.addEventListener("load", () => {
-  // const loading = document.getElementById("loading");
-  // loading.style.display = "none";
   const canvas = document.getElementById("canvas1");
   const ctx = canvas.getContext("2d");
   canvas.width = 500;
@@ -19,10 +23,8 @@ window.addEventListener("load", () => {
       this.groundMargin = 80;
       this.speed = 0;
       this.maxSpeed = 3;
-      this.background = new Background(this);
       this.player = new Player(this);
       this.input = new InputHandler(this);
-      this.UI = new UI(this);
       this.enemies = [];
       this.particles = [];
       this.collisions = [];
@@ -37,13 +39,16 @@ window.addEventListener("load", () => {
       this.timeOver = false;
       this.player.currentState = this.player.states[0];
       this.player.currentState.enter();
+      this.backgroundMode = "city";
+      this.UI = new UI(this);
+      this.background = new Background(this);
     }
     update(deltaTime) {
       this.time += deltaTime;
       if (this.time > this.maxTime) {
         this.timeOver = true;
       }
-      this.background.update();
+      this.background.update(mode);
       this.player.update(this.input.keys, deltaTime);
 
       // handle Enemies
