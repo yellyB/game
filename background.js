@@ -37,7 +37,7 @@ export class Background {
       layer.update();
     });
     this.mode = mode;
-    this.setBackground();
+    // this.setBackground();
   }
   draw(context) {
     this.backgroundLayers.forEach((layer) => {
