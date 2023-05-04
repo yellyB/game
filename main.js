@@ -36,7 +36,8 @@ window.addEventListener("load", () => {
       this.fontColor = "black";
       this.time = 0;
       this.maxTime = 20000;
-      this.timeOver = false;
+      this.gameOver = false;
+      this.life = 5;
       this.player.currentState = this.player.states[0];
       this.player.currentState.enter();
       this.backgroundMode = "city";
@@ -46,7 +47,7 @@ window.addEventListener("load", () => {
     update(deltaTime) {
       this.time += deltaTime;
       if (this.time > this.maxTime) {
-        this.timeOver = true;
+        this.gameOver = true;
       }
       this.background.update(mode);
       this.player.update(this.input.keys, deltaTime);
@@ -115,7 +116,7 @@ window.addEventListener("load", () => {
     game.draw(ctx, 0);
     game.update(deltaTime);
 
-    if (!game.timeOver) requestAnimationFrame(animate);
+    if (!game.gameOver) requestAnimationFrame(animate);
   };
   animate(0);
 });

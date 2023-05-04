@@ -130,7 +130,9 @@ export class Player {
           // rolling or diving
           this.game.score++;
         } else {
-          this.setState(6, 0);
+          this.setState(6, 0); // HIT(dizzy)
+          this.game.life--;
+          if (this.game.life <= 0) this.game.gameOver = true;
         }
       }
     });

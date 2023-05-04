@@ -3,6 +3,7 @@ export class UI {
     this.game = game;
     this.fontSize = 30;
     this.fontFamily = "Creepster";
+    this.lifeImgae = document.getElementById("life");
   }
   draw(context) {
     context.save();
@@ -22,8 +23,13 @@ export class UI {
     context.font = `${this.fontSize * 0.8}px ${this.fontFamily}`;
     context.fillText(`Time: ${(this.game.time * 0.001).toFixed(1)}`, 20, 80);
 
+    // life
+    for (let i = 0; i < this.game.life; i++) {
+      context.drawImage(this.lifeImgae, 25 * i + 20, 95, 25, 25);
+    }
+
     // game over text
-    if (this.game.timeOver) {
+    if (this.game.gameOver) {
       context.textAlign = "center";
       context.font = `${this.fontSize * 2}px ${this.fontFamily}`;
       if (this.game.score > 5) {
