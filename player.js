@@ -132,7 +132,7 @@ export class Player {
           this.game.score++;
           console.log(enemy, enemy.x);
           this.game.floatingMessages.push(
-            new FloatingMessages("+1", enemy.x, enemy.y, 0, 0)
+            new FloatingMessages("+1", enemy.x, enemy.y, 150, 50) // score 를 타겟으로 이동
           );
         } else {
           this.setState(6, 0); // HIT(dizzy)
