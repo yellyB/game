@@ -28,6 +28,7 @@ window.addEventListener("load", () => {
       this.enemies = [];
       this.particles = [];
       this.collisions = [];
+      this.floatingMessages = [];
       this.maxParticles = 200;
       this.enemyTimer = 0;
       this.enemyInterval = 1000;
@@ -65,6 +66,11 @@ window.addEventListener("load", () => {
           this.enemies.splice(this.enemies.indexOf(enemy), 1);
       });
 
+      // handle messages
+      this.floatingMessages.forEach((message) => {
+        message.update();
+      });
+
       // handle particles
       this.particles.forEach((particle, index) => {
         particle.update();
@@ -85,6 +91,9 @@ window.addEventListener("load", () => {
       this.player.draw(context);
       this.enemies.forEach((enemy) => {
         enemy.draw(context);
+      });
+      this.floatingMessages.forEach((message) => {
+        message.draw(context);
       });
       this.particles.forEach((particle) => {
         particle.draw(context);

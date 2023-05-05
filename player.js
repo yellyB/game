@@ -8,6 +8,7 @@ import {
   Hit,
 } from "./playerState.js";
 import { CollisionAnimation } from "./CollisionAnimation.js";
+import { FloatingMessages } from "./FloatingMessages.js";
 
 export class Player {
   constructor(game) {
@@ -129,6 +130,10 @@ export class Player {
         ) {
           // rolling or diving
           this.game.score++;
+          console.log(enemy, enemy.x);
+          this.game.floatingMessages.push(
+            new FloatingMessages("+1", enemy.x, enemy.y, 0, 0)
+          );
         } else {
           this.setState(6, 0); // HIT(dizzy)
           this.game.life--;
