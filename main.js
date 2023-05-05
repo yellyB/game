@@ -62,8 +62,6 @@ window.addEventListener("load", () => {
       }
       this.enemies.forEach((enemy) => {
         enemy.update(deltaTime);
-        if (enemy.markedForDeletion)
-          this.enemies.splice(this.enemies.indexOf(enemy), 1);
       });
 
       // handle messages
@@ -74,7 +72,6 @@ window.addEventListener("load", () => {
       // handle particles
       this.particles.forEach((particle, index) => {
         particle.update();
-        if (particle.markedForDeletion) this.particles.splice(index, 1);
       });
       if (this.particles.length > this.maxParticles) {
         this.particles.length = this.maxParticles;
@@ -83,8 +80,21 @@ window.addEventListener("load", () => {
       //handle collision sprites
       this.collisions.forEach((collision, index) => {
         collision.update(deltaTime);
-        if (collision.markedForDeletion) this.collisions.splice(index, 1);
       });
+
+      // collision 시 적용 로직
+      // ! 풀모양 enemy가 수평 오른쪽으로 약간씩 이동하는 버그
+      // => 기존 splice 메서드는 enemy삭제 후 배열을 루프 돌 때 인덱스 계산을 다시 하는데, 이때 좌표가 조금씩 잘못 계산됨. filter로 교체. (다른 배열에도 동일하게 적용)
+      this.enemies = this.enemies.filter((enemy) => !enemy.markedForDeletion);
+      this.floatingMessages = this.floatingMessages.filter(
+        (message) => !message.markedForDeletion
+      );
+      this.particles = this.particles.filter(
+        (particle) => !particle.markedForDeletion
+      );
+      this.collisions = this.collisions.filter(
+        (collision) => !collision.markedForDeletion
+      );
     }
     draw(context) {
       this.background.draw(context);
