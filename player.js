@@ -36,6 +36,7 @@ export class Player {
       new Diving(this.game),
       new Hit(this.game),
     ];
+    this.currentState = null;
   }
   update(input, deltaTime) {
     this.checkCollision();
@@ -130,12 +131,12 @@ export class Player {
         ) {
           // rolling or diving
           this.game.score++;
-          console.log(enemy, enemy.x);
           this.game.floatingMessages.push(
             new FloatingMessages("+1", enemy.x, enemy.y, 150, 50) // score 를 타겟으로 이동
           );
         } else {
           this.setState(6, 0); // HIT(dizzy)
+          this.game.score--;
           this.game.life--;
           if (this.game.life <= 0) this.game.gameOver = true;
         }

@@ -13,7 +13,7 @@ dropdown.addEventListener("change", function (e) {
 window.addEventListener("load", () => {
   const canvas = document.getElementById("canvas1");
   const ctx = canvas.getContext("2d");
-  canvas.width = 500;
+  canvas.width = 900;
   canvas.height = 500;
 
   class Game {
@@ -34,6 +34,7 @@ window.addEventListener("load", () => {
       this.enemyInterval = 1000;
       this.debug = false;
       this.score = 0;
+      this.winningScore = 40;
       this.fontColor = "black";
       this.time = 0;
       this.maxTime = 20000;
