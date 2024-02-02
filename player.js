@@ -7,8 +7,8 @@ import {
   Diving,
   Hit,
 } from "./playerState.js";
-import { CollisionAnimation } from "./CollisionAnimation.js";
-import { FloatingMessages } from "./FloatingMessages.js";
+import { CollisionAnimation } from "./collisionAnimation.js";
+import { FloatingMessages } from "./floatingMessages.js";
 
 export class Player {
   constructor(game) {
